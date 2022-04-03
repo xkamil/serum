@@ -21,8 +21,14 @@
     <googleTruth.version>1.1.3</googleTruth.version>
     <restAssured.version>4.5.1</restAssured.version>
     <jackson.version>2.11.0</jackson.version>
-    <junit5.version>5.5.2</junit5.version>
+    <junit5.version>5.6.2</junit5.version>
     <apacheCommons.version>3.12.0</apacheCommons.version>
+    <allureJunit5.version>2.17.3</allureJunit5.version>
+    <allureMaven.version>2.11.2</allureMaven.version>
+    <aspectj.version>1.8.10</aspectj.version>
+    <mavenSurefire.version>3.0.0-M5</mavenSurefire.version>
+    <logback.version>1.2.10</logback.version>
+    <sl4j.version>1.7.30</sl4j.version>
   </properties>
 
   <dependencyManagement>
@@ -64,6 +70,18 @@
         <version>${apacheCommons.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-junit5</artifactId>
+        <version>${allureJunit5.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-rest-assured</artifactId>
+        <version>${allureJunit5.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -72,29 +90,78 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>1.2.6</version>
+      <version>${logback.version}</version>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.6</version>
+      <version>${logback.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
+      <version>${sl4j.version}</version>
     </dependency>
 
   </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>${allureMaven.version}</version>
+        <configuration>
+          <reportVersion>${allureJunit5.version}</reportVersion>
+        </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${mavenSurefire.version}</version>
+        <configuration>
+          <argLine>
+            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+          </argLine>
+          <properties>
+            <property>
+              <name>listener</name>
+              <value>io.qameta.allure.junit5.AllureJunit5</value>
+            </property>
+          </properties>
+          <systemProperties>
+            <property>
+              <name>allure.results.directory</name>
+              <value>${project.build.directory}/allure-results</value>
+            </property>
+            <property>
+              <name>allure.link.issue.pattern</name>
+              <value>https://jira{}</value>//TODO
+            </property>
+            <property>
+              <name>junit.jupiter.extensions.autodetection.enabled</name>
+              <value>true</value>
+            </property>
+          </systemProperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit5.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
     </plugins>
   </build>
 
