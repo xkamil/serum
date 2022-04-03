@@ -7,11 +7,12 @@
   <groupId>org.example</groupId>
   <artifactId>qa-serum</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <modules>
     <module>qa-api</module>
     <module>qa-commons</module>
+    <module>qa-reporting</module>
   </modules>
 
   <properties>
@@ -28,7 +29,8 @@
     <aspectj.version>1.8.10</aspectj.version>
     <mavenSurefire.version>3.0.0-M5</mavenSurefire.version>
     <logback.version>1.2.10</logback.version>
-    <sl4j.version>1.7.30</sl4j.version>
+    <sl4j.version>1.7.32</sl4j.version>
+    <junitPlatform.commons>1.8.2</junitPlatform.commons>
   </properties>
 
   <dependencyManagement>
@@ -56,12 +58,24 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
         <version>${junit5.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
         <version>${junit5.version}</version>
+        <exclusions>
+          <exclusion>
+              <groupId>org.junit.platform</groupId>
+              <artifactId>junit-platform-commons</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -86,6 +100,13 @@
   </dependencyManagement>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+      <version>${junitPlatform.commons}</version>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -140,7 +161,7 @@
             </property>
             <property>
               <name>allure.link.issue.pattern</name>
-              <value>https://jira{}</value>//TODO
+              <value>https://jira{}</value>
             </property>
             <property>
               <name>junit.jupiter.extensions.autodetection.enabled</name>

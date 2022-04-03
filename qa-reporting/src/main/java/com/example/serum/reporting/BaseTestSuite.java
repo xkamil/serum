@@ -1,4 +1,4 @@
-package com.example.serum.api.test;
+package com.example.serum.reporting;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.Status;
@@ -13,47 +13,28 @@ public abstract class BaseTestSuite {
 
   private String currentStepId;
 
-  protected void _given(CharSequence message) {
+  protected void _given(String message, Object... args) {
     registerStep("given", message);
   }
 
-  protected void _given(String message, Object... args) {
-    _given(String.format(message, args));
-  }
-
-  protected void _when(CharSequence message) {
+  protected void _when(String message, Object... args) {
     registerStep("when", message);
   }
 
-  protected void _when(String message, Object... args) {
-    _when(String.format(message, args));
-  }
-
-  protected void _then(CharSequence message) {
-    registerStep("then", message);
-  }
-
   protected void _then(String message, Object... args) {
-    _then(String.format(message, args));
-  }
-
-  protected void _and(CharSequence message) {
-    registerStep("and", message);
+    registerStep("then", message);
+    ;
   }
 
   protected void _and(String message, Object... args) {
-    _and(String.format(message, args));
-  }
-
-  protected void _info(CharSequence message) {
-    registerStep("info", message);
+    registerStep("and", message);
   }
 
   protected void _info(String message, Object... args) {
-    _info(String.format(message, args));
+    registerStep("info", message);
   }
 
-  private void registerStep(String prefix, CharSequence message) {
+  private void registerStep(String prefix, String message) {
     if (null != currentStepId) {
       Allure.getLifecycle().stopStep(currentStepId);
     }

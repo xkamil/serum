@@ -78,7 +78,7 @@ public class JsonParser {
     try {
       return objectMapper.writeValueAsString(any);
     } catch (JsonProcessingException e) {
-      throw new JsonParserException("Cannot create Json from object.", e);
+      throw new JsonParseException("Cannot create Json from object.", e);
     }
   }
 
@@ -86,7 +86,7 @@ public class JsonParser {
     try {
       return objectMapper.writer(multilineJsonPrinter).writeValueAsString(any);
     } catch (JsonProcessingException e) {
-      throw new JsonParserException("Cannot create Json from object.", e);
+      throw new JsonParseException("Cannot create Json from object.", e);
     }
   }
 
