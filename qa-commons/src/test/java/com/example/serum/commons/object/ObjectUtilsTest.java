@@ -1,4 +1,4 @@
-package com.example.serum.commons.json;
+package com.example.serum.commons.object;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

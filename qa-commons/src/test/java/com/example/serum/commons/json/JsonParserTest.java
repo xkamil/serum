@@ -2,6 +2,7 @@ package com.example.serum.commons.json;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,16 @@ public class JsonParserTest {
         () -> assertThat(deserialized.getLastName()).isEqualTo("Nowak")
     );
 
+  }
+
+  @Test
+  void testStrictFromJSON() {
+    // given valid json string
+    var jsonString = "{ \"firstName\": \"Roman\",\"lastName\": \"Nowak\",  \"age\": 22,  \"cash\": 1.234, \"a\": \"b\" } ";
+
+    // when it's deserialized to class
+    // then it should throw
+    assertThrows(JsonParseException.class, () -> JsonParser.strictFromJSON(jsonString, Person.class));
   }
 
   @Test

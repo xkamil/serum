@@ -1,5 +1,8 @@
 package com.example.serum.api.response;
 
+/**
+ * Represents http response status codes
+ */
 public final class ResponseStatusCode {
 
   public static final int CONTINUE = 100;

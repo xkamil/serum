@@ -5,6 +5,7 @@ import io.restassured.filter.OrderedFilter;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,19 +16,43 @@ public class RequestLoggingFilter implements OrderedFilter {
 
   @Override
   public Response filter(FilterableRequestSpecification req, FilterableResponseSpecification res, FilterContext ctx) {
-    var sb = new StringBuffer();
-    sb.append(req.getMethod()).append(" ").append(req.getURI()).append("\n");
-    req.getHeaders().asList().forEach(header -> {
-      sb.append(header.getName()).append(": ").append(header.getValue()).append("\n");
-    });
+    log.info("Request:\n{}", asCurl(req));
+    return ctx.next(req, res);
+  }
 
-    if (req.getBody() != null) {
-      sb.append(req.getBody().toString()).append("\n");
+  private String asCurl(FilterableRequestSpecification request) {
+    var curl = new StringBuilder();
+    curl.append(String.format("curl --request %s '%s' \\\n", request.getMethod().toUpperCase(), request.getURI()));
+
+    if (request.getBody() != null) {
+      curl.append(String.format("--data '%s' \\\n", request.getBody().toString()));
     }
 
-    log.info("Request >>>>>>>>>>>>> \n{}", sb.toString());
+    if (request.getFormParams() != null && request.getFormParams().size() > 0) {
+      var formParamsInline = request.getFormParams().entrySet().stream()
+          .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+          .collect(Collectors.joining("&"));
+      curl.append(String.format("--data '%s' \\\n", formParamsInline));
+    }
 
-    return ctx.next(req, res);
+    request.getHeaders().asList()
+        .forEach(h -> curl.append(String.format("--header '%s: %s' \\\n", h.getName(), h.getValue())));
+
+    request.getCookies().asList()
+        .forEach(c -> curl.append(String.format("--cookie '%s=%s' \\\n", c.getName(), c.getValue())));
+
+    curl.append("--insecure --silent --show-error --include \n ");
+
+    if (request.getMultiPartParams() != null && request.getMultiPartParams().size() > 0) {
+      curl.append("\nRequest data preview for multipart form params:");
+      curl.append("\n--------------------------------------------\n");
+      var formSB = new StringBuilder();
+      request.getMultiPartParams()
+          .forEach(k -> formSB.append(String.format("[%s] = %s\n", k.getControlName(), k.getContent())));
+      curl.append(formSB).append("' \n");
+    }
+
+    return curl.toString();
   }
 
   @Override

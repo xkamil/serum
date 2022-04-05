@@ -5,24 +5,48 @@ import io.restassured.filter.FilterContext;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
-import java.util.Optional;
-
+import java.util.function.Supplier;
 
 public class RequestHeaderFilter implements Filter {
 
   private final String headerName;
-  private String headerValue;
+  private String staticValue;
+  private Supplier<String> valueGenerator;
+  private String valueForNextRequest;
 
   public RequestHeaderFilter(String headerName) {
     this.headerName = headerName;
+    this.valueForNextRequest = null;
   }
 
-  public void setValue(String token) {
-    this.headerValue = token;
+  /**
+   * Set static header value for all requests
+   *
+   * @param value - header value
+   */
+  public void setValue(String value) {
+    this.staticValue = value;
+    this.valueGenerator = null;
   }
 
-  public void removeValue() {
-    this.headerValue = null;
+  /**
+   * Set header value generator. Generator will generate new value for each request
+   *
+   * @param valueGenerator - header value generator
+   */
+  public void setValue(Supplier<String> valueGenerator) {
+    this.valueGenerator = valueGenerator;
+    this.staticValue = null;
+  }
+
+  /**
+   * Set header value that will be sent in next request and then it will be removed, so for other requests static header
+   * value or header value generator will provide value.
+   *
+   * @param newValue - header value for next request
+   */
+  public void setValueForNextRequest(String newValue) {
+    this.valueForNextRequest = newValue;
   }
 
   @Override
@@ -34,7 +58,14 @@ public class RequestHeaderFilter implements Filter {
         .filter(h -> !h.getName().equalsIgnoreCase(headerName))
         .forEach(req::header);
 
-    Optional.ofNullable(headerValue).ifPresent(token -> req.header(headerName, token));
+    if (valueForNextRequest != null) {
+      req.header(headerName, valueForNextRequest);
+      valueForNextRequest = null;
+    } else if (staticValue != null) {
+      req.header(headerName, staticValue);
+    } else if (valueGenerator != null) {
+      req.header(headerName, valueGenerator.get());
+    }
 
     return ctx.next(req, res);
   }

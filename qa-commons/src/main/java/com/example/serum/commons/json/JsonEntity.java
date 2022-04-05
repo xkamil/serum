@@ -1,15 +1,14 @@
-package com.example.serum.api.common;
+package com.example.serum.commons.json;
 
 import com.example.serum.commons.json.JsonParser;
 
 public abstract class JsonEntity {
 
-  @Override
-  public String toString() {
+  public String toJsonString() {
     return JsonParser.toMultilineJSON(this);
   }
 
-  public String toInlineString() {
+  public String toInlineJsonString() {
     return JsonParser.toInlineJSON(this);
   }
 }
