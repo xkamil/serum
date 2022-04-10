@@ -24,9 +24,10 @@ public class RequestHeaderFilter implements Filter {
    *
    * @param value - header value
    */
-  public void setValue(String value) {
+  public RequestHeaderFilter setValue(String value) {
     this.staticValue = value;
     this.valueGenerator = null;
+    return this;
   }
 
   /**
@@ -34,9 +35,10 @@ public class RequestHeaderFilter implements Filter {
    *
    * @param valueGenerator - header value generator
    */
-  public void setValue(Supplier<String> valueGenerator) {
+  public RequestHeaderFilter setValue(Supplier<String> valueGenerator) {
     this.valueGenerator = valueGenerator;
     this.staticValue = null;
+    return this;
   }
 
   /**
@@ -45,8 +47,9 @@ public class RequestHeaderFilter implements Filter {
    *
    * @param newValue - header value for next request
    */
-  public void setValueForNextRequest(String newValue) {
+  public RequestHeaderFilter setValueForNextRequest(String newValue) {
     this.valueForNextRequest = newValue;
+    return this;
   }
 
   @Override

@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class ResponseLoggingFilter implements OrderedFilter {
 
   private static final Logger log = LoggerFactory.getLogger(ResponseLoggingFilter.class);
-  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
   @Override
   public Response filter(FilterableRequestSpecification req, FilterableResponseSpecification res, FilterContext ctx) {
@@ -31,7 +30,7 @@ public class ResponseLoggingFilter implements OrderedFilter {
 
   private String getResponseAsFormattedString(Response response) {
     var sb = new StringBuilder();
-    sb.append(String.format("%s%s%s", LINE_SEPARATOR, response.getStatusLine(), LINE_SEPARATOR));
+    sb.append(String.format("\n%s\n", response.getStatusLine()));
     response.getHeaders().asList().forEach(h -> sb.append(String.format("%s: %s\n", h.getName(), h.getValue())));
     Optional.ofNullable(response.body())
         .map(ResponseBodyData::asPrettyString)
