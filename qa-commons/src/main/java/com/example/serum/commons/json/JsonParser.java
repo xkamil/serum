@@ -117,8 +117,12 @@ public class JsonParser {
    * @return json deserialized to target deserialization class
    * @throws JsonParseException if deserializaion fails
    */
+  @SuppressWarnings("unchecked")
   public static <T> T fromJSON(String json, Class<T> cls) {
     try {
+      if (cls.equals(String.class)) {
+        return (T) json;
+      }
       return objectMapper.readValue(json, cls);
     } catch (IOException e) {
       throw new JsonParseException("Cannot create object of class: " + cls.getName() + " from Json", e);
@@ -136,8 +140,12 @@ public class JsonParser {
    * @throws JsonParseException if deserializaion fails and if json string contains properties that target class has no
    * mapping for
    */
+  @SuppressWarnings("unchecked")
   public static <T> T strictFromJSON(String json, Class<T> cls) {
     try {
+      if (cls.equals(String.class)) {
+        return (T) json;
+      }
       return strictObjectMapper.readValue(json, cls);
     } catch (IOException e) {
       throw new JsonParseException("Cannot create object of class: " + cls.getName() + " from Json", e);

@@ -7,12 +7,13 @@
   <groupId>org.example</groupId>
   <artifactId>qa-serum</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <modules>
     <module>qa-api</module>
     <module>qa-commons</module>
     <module>qa-reporting</module>
+    <module>qa-kafka</module>
   </modules>
 
   <properties>
@@ -31,10 +32,19 @@
     <logback.version>1.2.10</logback.version>
     <sl4j.version>1.7.32</sl4j.version>
     <junitPlatform.commons>1.8.2</junitPlatform.commons>
+    <kafka.version>3.1.0</kafka.version>
+    <awaitility.version>4.0.3</awaitility.version>
+    <testcontainers.version>1.17.1</testcontainers.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${awaitility.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>com.google.truth</groupId>
@@ -88,6 +98,18 @@
         <groupId>io.qameta.allure</groupId>
         <artifactId>allure-rest-assured</artifactId>
         <version>${allureJunit5.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${kafka.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>kafka</artifactId>
+        <version>${testcontainers.version}</version>
       </dependency>
 
     </dependencies>
