@@ -1,5 +1,5 @@
-import com.example.qa.kafka.KafkaClient;
-import com.example.qa.kafka.KafkaEvent;
+package com.example.qa.kafka;
+
 import com.example.serum.commons.json.JsonEntity;
 import java.util.Collections;
 import java.util.Properties;
@@ -17,11 +17,11 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 
-public class KafkaClientTest {
+public class SerumKafkaClient2Test {
 
   public static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"));
   public static Producer<String, String> kafkaProducer;
-  public static KafkaClient kafkaClient;
+  public static SerumKafkaClient kafkaClient;
 
   @BeforeAll
   static void beforeAll() throws ExecutionException, InterruptedException {
@@ -41,8 +41,8 @@ public class KafkaClientTest {
 
     var bootstrapServers = kafka.getBootstrapServers();
     kafkaProducer = getKafkaProducer(bootstrapServers);
-    kafkaClient = KafkaClient.builder(bootstrapServers)
-        .withProperty("allow.auto.create.topics", "true")
+    kafkaClient = SerumKafkaClient.builder(bootstrapServers)
+        .withConsumerProperty("allow.auto.create.topics", "true")
         .build();
   }
 
