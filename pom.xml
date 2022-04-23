@@ -7,7 +7,7 @@
   <groupId>org.example</groupId>
   <artifactId>qa-serum</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
 
   <modules>
     <module>qa-api</module>
