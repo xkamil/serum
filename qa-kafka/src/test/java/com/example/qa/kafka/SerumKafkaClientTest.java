@@ -39,7 +39,7 @@ public class SerumKafkaClientTest {
   }
 
   @Test
-  void test() {
+  void kafkaClientTest() {
     // given message published before client subscribe topic
     var message1 = "{'type':'type1','number':1}".replace("'", "\"");
     kafkaClient.publishEvent(TOPIC_1, message1);
@@ -62,7 +62,7 @@ public class SerumKafkaClientTest {
 
     // and messages published after subscription should be found
     var event2 = event1Consumer.waitForEvent(5, f -> true);
-    var event3 = event2Consumer.waitForEvent(5, f -> true);
+    var event3 = event2Consumer.waitForEvent(5, f -> f.getContent().owner.equals("Dog"));
 
     assertAll(
         () -> assertThat(event2.getContent().type).isEqualTo("type2"),

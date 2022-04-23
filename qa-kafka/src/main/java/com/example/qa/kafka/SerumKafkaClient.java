@@ -24,7 +24,7 @@ public final class SerumKafkaClient {
   private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
       .setDaemon(true).build());
 
-  private final String consumerGroupPrefix;
+  private final String consumerGroupPrefix = "test-";
   private final Properties consumerProperties;
   private final Properties adminProperties;
   private final Properties producerProperties;
@@ -35,7 +35,6 @@ public final class SerumKafkaClient {
     this.consumerProperties = consumerProperties;
     this.adminProperties = adminProperties;
     this.producerProperties = producerProperties;
-    this.consumerGroupPrefix = "test-";
   }
 
   public static SerumKafkaClientBuilder builder(String bootstrapServers) {
