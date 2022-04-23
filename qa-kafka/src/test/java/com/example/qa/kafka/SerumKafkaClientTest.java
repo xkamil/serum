@@ -42,7 +42,7 @@ public class SerumKafkaClientTest {
   void test() {
     // given message published before client subscribe topic
     var message1 = "{'type':'type1','number':1}".replace("'", "\"");
-    kafkaClient.publishMessage(TOPIC_1, message1);
+    kafkaClient.publishEvent(TOPIC_1, message1);
 
     // when client subscribe to topic
     var event1Consumer = kafkaClient.subscribe(Event1.class);
@@ -52,8 +52,8 @@ public class SerumKafkaClientTest {
     var message2 = "{'type':'type2','number':2}".replace("'", "\"");
     var message3 = "{'owner':'Dog'}".replace("'", "\"");
 
-    kafkaClient.publishMessage(TOPIC_1, message2);
-    kafkaClient.publishMessage(TOPIC_1, message3);
+    kafkaClient.publishEvent(TOPIC_1, message2);
+    kafkaClient.publishEvent(TOPIC_1, message3);
 
     // then message published before subscription should not be found
     assertThrows(ConditionTimeoutException.class, () -> {
@@ -72,7 +72,6 @@ public class SerumKafkaClientTest {
 
   }
 
-
   @KafkaEvent(topic = TOPIC_1, filter = "type")
   public static class Event1 extends JsonEntity {
 
@@ -88,7 +87,7 @@ public class SerumKafkaClientTest {
 
   private static void createTopics(String bootstrapServers, String... topicNames) throws Exception {
     var props = new Properties();
-    props.put("bootstrap.servers", kafka.getBootstrapServers());
+    props.put("bootstrap.servers", bootstrapServers);
 
     try (Admin admin = Admin.create(props)) {
       int partitions = 5;
