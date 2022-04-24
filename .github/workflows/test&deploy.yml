@@ -1,5 +1,7 @@
 name: Test and deploy artifacts
 
+environment: deploy
+
 on:
   push:
     branches:
