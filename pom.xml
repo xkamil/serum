@@ -137,6 +137,14 @@
 
   </dependencies>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub xkamil Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/xkamil/serum</url>
+    </repository>
+  </distributionManagement>
+
   <build>
     <plugins>
 
