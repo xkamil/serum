@@ -1,12 +1,13 @@
 name: Test and deploy artifacts
 
-env:
-  GITHUB_TOKEN: {{secrets.TOKEN}}
+on:
+  push:
+    branches:
+      - 'main'
+      - 'release/**'
 
-on: [push]
-  branches:
-    - 'main'
-    - 'release/**'
+env:
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   build:
