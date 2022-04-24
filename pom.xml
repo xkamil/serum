@@ -4,16 +4,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
-  <artifactId>qa-serum</artifactId>
+  <groupId>pl.net.testit.serum</groupId>
+  <artifactId>serum</artifactId>
   <packaging>pom</packaging>
   <version>0.1-SNAPSHOT</version>
 
   <modules>
-    <module>qa-api</module>
-    <module>qa-commons</module>
-    <module>qa-reporting</module>
-    <module>qa-kafka</module>
+    <module>api</module>
+    <module>commons</module>
+    <module>reporting</module>
+    <module>kafka</module>
   </modules>
 
   <properties>
