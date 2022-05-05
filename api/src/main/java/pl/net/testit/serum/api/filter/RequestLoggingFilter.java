@@ -16,7 +16,7 @@ public class RequestLoggingFilter implements OrderedFilter {
 
   @Override
   public Response filter(FilterableRequestSpecification req, FilterableResponseSpecification res, FilterContext ctx) {
-    log.info("Request:\n{}", asCurl(req));
+    log.info("Request:\n\n{}", asCurl(req));
     return ctx.next(req, res);
   }
 

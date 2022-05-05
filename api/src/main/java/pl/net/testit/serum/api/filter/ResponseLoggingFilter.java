@@ -19,7 +19,7 @@ public class ResponseLoggingFilter implements OrderedFilter {
   public Response filter(FilterableRequestSpecification req, FilterableResponseSpecification res, FilterContext ctx) {
     var response = ctx.next(req, res);
     var responseTime = response.getTimeIn(TimeUnit.MILLISECONDS);
-    log.info("Response ({} ms) {}\n", responseTime, getResponseAsFormattedString(response));
+    log.info("Response ({} ms) {}\n\n", responseTime, getResponseAsFormattedString(response));
     return response;
   }
 
