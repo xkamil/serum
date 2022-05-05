@@ -7,7 +7,7 @@
   <groupId>pl.net.testit.serum</groupId>
   <artifactId>serum</artifactId>
   <packaging>pom</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
 
   <modules>
     <module>api</module>
@@ -27,7 +27,7 @@
     <apacheCommons.version>3.12.0</apacheCommons.version>
     <allureJunit5.version>2.17.3</allureJunit5.version>
     <allureMaven.version>2.11.2</allureMaven.version>
-    <aspectj.version>1.8.10</aspectj.version>
+    <aspectj.version>1.9.6</aspectj.version>
     <mavenSurefire.version>3.0.0-M5</mavenSurefire.version>
     <logback.version>1.2.10</logback.version>
     <sl4j.version>1.7.32</sl4j.version>
