@@ -4,7 +4,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import pl.net.testit.serum.commons.json.JsonEntity;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
+import pl.net.testit.serum.commons.json.JsonEntity;
 
 
 public class SerumKafkaClientTest {
@@ -33,7 +33,7 @@ public class SerumKafkaClientTest {
   }
 
   @AfterAll
-  static void afterAll() throws Exception {
+  static void afterAll() {
     kafkaClient.closeProducer();
     kafkaClient.unsubscribeAllTopics();
   }

@@ -1,9 +1,7 @@
 package pl.net.testit.serum.kafka;
 
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.awaitility.Awaitility.await;
 
-import pl.net.testit.serum.commons.json.JsonParser;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,6 +21,7 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.record.TimestampType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.net.testit.serum.commons.json.JsonParser;
 
 public class SerumKafkaConsumer<T> {
 
@@ -73,31 +71,28 @@ public class SerumKafkaConsumer<T> {
 
   public KafkaEventWrapper<T> waitForEvent(int durationInSeconds, Predicate<KafkaEventWrapper<T>> filter) {
     log.info("Waiting {} seconds for matching event on topic: {}", durationInSeconds, topic);
-    var foundEvent = new AtomicReference<KafkaEventWrapper<T>>();
 
-    await().timeout(Duration.ofSeconds(durationInSeconds)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
-          var foundEvents = events.stream().filter(filter).collect(Collectors.toList());
-          assertWithMessage("Expected 1 event on topic " + topic + " matching filter.").that(foundEvents).hasSize(1);
-          foundEvent.set(foundEvents.get(0));
+    return await().timeout(Duration.ofSeconds(durationInSeconds)).pollInterval(Duration.ofMillis(100)).until(
+        () -> events.stream().filter(filter).collect(Collectors.toList()),
+        matchingEvents -> {
+          log.info("Expected 1 event on topic {} matching filter. Found {}", topic, matchingEvents.size());
+          return matchingEvents.size() == 1;
         }
-    );
-
-    return foundEvent.get();
+    ).get(0);
   }
 
   public List<KafkaEventWrapper<T>> waitForEvents(int durationInSeconds, int count,
       Predicate<KafkaEventWrapper<T>> filter) {
     log.info("Waiting {} seconds for matching {} events on topic: {}", durationInSeconds, count, topic);
-    var foundEvents = new ArrayList<KafkaEventWrapper<T>>();
 
-    await().timeout(Duration.ofSeconds(durationInSeconds)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
-          var aFoundEvents = events.stream().filter(filter).collect(Collectors.toList());
-          assertWithMessage("Expected 1 event on topic " + topic + " matching filter.").that(aFoundEvents).hasSize(count);
-          foundEvents.addAll(aFoundEvents);
+    return await().timeout(Duration.ofSeconds(durationInSeconds)).pollInterval(Duration.ofMillis(100)).until(
+        () -> events.stream().filter(filter).collect(Collectors.toList()),
+        matchingEvents -> {
+          log.info("Expected 1 event on topic {} matching filter. Found {}", topic, matchingEvents.size());
+          return matchingEvents.size() == count;
         }
     );
 
-    return foundEvents;
   }
 
   public boolean isSubscribed() {

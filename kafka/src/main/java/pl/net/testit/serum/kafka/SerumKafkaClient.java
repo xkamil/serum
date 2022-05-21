@@ -1,6 +1,6 @@
 package pl.net.testit.serum.kafka;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -21,8 +21,13 @@ import org.slf4j.LoggerFactory;
 public final class SerumKafkaClient {
 
   private static final Logger log = LoggerFactory.getLogger(SerumKafkaClient.class);
-  private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
-      .setDaemon(true).build());
+  private static final ExecutorService executorService = Executors.newCachedThreadPool(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setPriority(Thread.NORM_PRIORITY);
+        return thread;
+      }
+  );
 
   private final String consumerGroupPrefix = "test-";
   private final Properties consumerProperties;
