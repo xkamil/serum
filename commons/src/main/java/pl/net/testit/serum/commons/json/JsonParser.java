@@ -21,34 +21,13 @@ public class JsonParser {
   private static final ObjectMapper strictObjectMapper;
   private static final DefaultPrettyPrinter multilineJsonPrinter;
 
-  private static final DeserializationProblemHandler unreconizedPropertyHandler = new DeserializationProblemHandler() {
-    @Override
-    public boolean handleUnknownProperty(DeserializationContext ctxt, com.fasterxml.jackson.core.JsonParser p,
-        JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName) {
-      var wasHandled = ctxt.getAttribute(beanOrClass.getClass()) != null && ctxt.getAttribute(beanOrClass.getClass())
-          .equals(propertyName);
-
-      if (!wasHandled) {
-        logger.warn("Missing property '{}' in target deserialization {}", propertyName, beanOrClass.getClass());
-        ctxt.setAttribute(beanOrClass.getClass(), propertyName);
-        try {
-          ctxt.getParser().skipChildren();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-
-      return true;
-    }
-  };
-
   static {
     objectMapper = new ObjectMapper();
     objectMapper.findAndRegisterModules();
 
     // deserialize floats to BigDecimal
     objectMapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
-    // datesserialized to ISO-8601
+    // dates serialized to ISO-8601
     objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     // fields with null values not serialized
     objectMapper.setSerializationInclusion(Include.NON_NULL);
@@ -59,10 +38,10 @@ public class JsonParser {
 
     strictObjectMapper = objectMapper.copy();
     // fail deserialization if property not defined in class occurs in json
-    strictObjectMapper.addHandler(getUnreconizedPropertyHandler(true));
+    strictObjectMapper.addHandler(getUnknownPropertyHandler(true));
 
     // dont't fail deserialization if property not defined in class occurs in json
-    objectMapper.addHandler(getUnreconizedPropertyHandler(false));
+    objectMapper.addHandler(getUnknownPropertyHandler(false));
 
     multilineJsonPrinter = new DefaultPrettyPrinter();
     var indenter = new DefaultIndenter("  ", "\n");
@@ -152,7 +131,7 @@ public class JsonParser {
     }
   }
 
-  private static DeserializationProblemHandler getUnreconizedPropertyHandler(boolean failOnUnreconizedProperty) {
+  private static DeserializationProblemHandler getUnknownPropertyHandler(boolean failOnUnknownProperty) {
     return new DeserializationProblemHandler() {
       @Override
       public boolean handleUnknownProperty(DeserializationContext ctxt, com.fasterxml.jackson.core.JsonParser p,
@@ -169,7 +148,7 @@ public class JsonParser {
             e.printStackTrace();
           }
         }
-        return !failOnUnreconizedProperty;
+        return !failOnUnknownProperty;
       }
     };
   }

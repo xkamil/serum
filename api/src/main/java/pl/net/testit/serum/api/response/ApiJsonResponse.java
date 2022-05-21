@@ -1,10 +1,7 @@
 package pl.net.testit.serum.api.response;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import io.restassured.response.Response;
 import java.util.Optional;
-import org.junit.Assert;
 
 public class ApiJsonResponse<T1, T2> {
 
@@ -32,18 +29,23 @@ public class ApiJsonResponse<T1, T2> {
   }
 
   public T1 assertOk() {
-    if (okResponseStatusCode != null) {
-      assertThat(response.statusCode()).isEqualTo(okResponseStatusCode);
-    } else {
-      assertThat(response.statusCode()).isAtLeast(200);
-      assertThat(response.statusCode()).isAtMost(299);
+    if (okResponseStatusCode != null && response.statusCode() != okResponseStatusCode) {
+      throw new ApiResponseException(
+          "Expected response status code " + okResponseStatusCode + " but was " + response.statusCode());
+    } else if (response.getStatusCode() < 200 || response.getStatusCode() > 299) {
+      throw new ApiResponseException(
+          "Expected response status code between 200 and 299 but was " + response.statusCode());
     }
     return response.getBody().as(okResponseClass);
   }
 
   @SuppressWarnings("unchecked")
   public T2 assertError(int expectedStatusCode) {
-    assertThat(response.statusCode()).isEqualTo(expectedStatusCode);
+    if (response.getStatusCode() != expectedStatusCode) {
+      throw new ApiResponseException(
+          "Expected response status code " + expectedStatusCode + " but was " + response.statusCode());
+    }
+
     if (errorResponseClass.equals(String.class)) {
       return (T2) response.getBody().asPrettyString();
     }
@@ -52,7 +54,11 @@ public class ApiJsonResponse<T1, T2> {
 
   @SuppressWarnings("unchecked")
   public T2 assertError() {
-    assertThat(response.statusCode()).isAtLeast(400);
+    if (response.getStatusCode() < 400) {
+      throw new ApiResponseException(
+          "Expected error response status code but was " + response.statusCode());
+    }
+
     if (errorResponseClass.equals(String.class)) {
       return (T2) response.getBody().asPrettyString();
     }
@@ -70,7 +76,7 @@ public class ApiJsonResponse<T1, T2> {
   public String getHeaderOrFail(String headerName) {
     var value = this.response.getHeader(headerName);
     if (value == null) {
-      Assert.fail(String.format("Header %s not present in response", headerName));
+      throw new ApiResponseException("Expected header " + headerName + " not present in response");
     }
     return value;
   }
