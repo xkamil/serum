@@ -10,7 +10,7 @@ public class RequestQueryParamsTest {
   @Test
   void testRequestQueryParamsAsMap() {
     // given example headers entity
-    var queryParams = new ExampleQueryParams("value1", 22, 33, "value?=+4");
+    var queryParams = new ExampleQueryParams("value1", 22, 33, "value?=+4", null);
 
     // when asMap is executed
     var asMap = queryParams.asMap();
@@ -39,11 +39,14 @@ public class RequestQueryParamsTest {
     @QueryParamName("param?=&4")
     public final String param4;
 
-    public ExampleQueryParams(String param1, Integer param2, Integer param3, String param4) {
+    public final String param5;
+
+    public ExampleQueryParams(String param1, Integer param2, Integer param3, String param4, String param5) {
       this.param1 = param1;
       this.param2 = param2;
       this.param3 = param3;
       this.param4 = param4;
+      this.param5 = param5;
     }
   }
 }
